@@ -1,17 +1,13 @@
-// src/routes/blogRoutes.js
 const express = require('express');
 const { createBlog, getAllBlogs, likeBlog, commentOnBlog, shareBlog } = require('../controllers/BlogController');
-// const authenticate  = require('../middleware/authMiddleware').default; // Middleware to verify JWT
+
 const blogRouter = express.Router();
 
-blogRouter.post('/createBlog',createBlog); // Ensure user is authenticated
-
+// Define routes without `authenticate` middleware
+blogRouter.post('/createBlog', createBlog); 
 blogRouter.get('/', getAllBlogs);
-
-blogRouter.post('/:blogId/like', likeBlog); // Ensure user is authenticated
-
-blogRouter.post('/:blogId/comment', commentOnBlog); // Ensure user is authenticated
-
-blogRouter.post('/:blogId/share', shareBlog); 
+blogRouter.post('/:blogId/like', likeBlog);
+blogRouter.post('/:blogId/comment', commentOnBlog);
+blogRouter.post('/:blogId/share', shareBlog);
 
 module.exports = blogRouter;
