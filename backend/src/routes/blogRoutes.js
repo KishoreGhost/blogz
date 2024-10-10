@@ -3,7 +3,6 @@ const { createBlog, getAllBlogs, likeBlog, commentOnBlog, shareBlog } = require(
 
 const blogRouter = express.Router();
 
-// Define routes without `authenticate` middleware
 blogRouter.post('/createBlog', createBlog); 
 blogRouter.get('/', getAllBlogs);
 blogRouter.post('/:blogId/like', likeBlog);

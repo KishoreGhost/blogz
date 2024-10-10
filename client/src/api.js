@@ -14,12 +14,11 @@ export const login = async (userData) => {
   return await api.post('/login', userData);
 };
 
-// Blog Endpoints
 export const fetchBlogs = async () => {
   return await api.get('/blog');
 };
 
 export const createBlog = async (blogData) => {
-  return await api.post('/blog/createBlog', blogData);
+  return await api.post('/createBlog', blogData);
 };
 
