@@ -1,21 +1,22 @@
 const Blog = require('../model/Blog.model');
-// const User = require('../model/User.model');
 
 const createBlog = async (req, res) => {
   const { title, content } = req.body;
-  const userId = req.user.id;
+  console.log(req.user)
+  // const userId = req.user.id;
 
   try {
     const newBlog = new Blog({
       title,
       content,
-      author: userId,
+      // author: userId,
       likes: 0,
       comments: []
     });
     await newBlog.save();
     res.status(201).json({ message: 'Blog created successfully', blog: newBlog });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: 'Error creating blog' });
   }
 };
@@ -30,6 +31,7 @@ const getAllBlogs = async (req, res) => {
 };
 
 const likeBlog = async (req, res) => {
+  console.log(req.params)
   const { blogId } = req.params;
 
   try {
@@ -47,13 +49,13 @@ const likeBlog = async (req, res) => {
 const commentOnBlog = async (req, res) => {
   const { blogId } = req.params;
   const { comment } = req.body;
-  const userId = req.user.id;
+  // const userId = req.user.id;
 
   try {
     const blog = await Blog.findById(blogId);
     if (!blog) return res.status(404).json({ error: 'Blog not found' });
 
-    blog.comments.push({ userId, comment });
+    blog.comments.push({ comment });
     await blog.save();
     res.json({ message: 'Comment added successfully', comments: blog.comments });
   } catch (error) {

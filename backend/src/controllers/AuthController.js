@@ -4,29 +4,33 @@ const jwt = require("jsonwebtoken");
 const User = require("../model/User.model");
 require("dotenv").config();
 
-const passCondition = process.env.pass_conditions;
+const passCondition = /^(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 const signup = async (req, res) => {
   const { email, password } = req.body;
 
-  if (!passCondition.test(password)) {
-    return res.status(400).json({
-      error:
-        "Password must be at least 8 characters long, contain at least one uppercase letter, and one special character.",
-    });
-  }
+  // if (!passCondition.test(password)) {
+  //   return res.status(400).json({
+  //     error:
+  //       "Password must be at least 8 characters long, contain at least one uppercase letter, and one special character.",
+  //   });
+  // }
+
+  // if (password !== confirmPassword) {
+  //   return res.status(400).json({ error: "Passwords do not match" });
+  // }
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({
       email,
-      password: hashedPassword,
-      confirmPassword,
+      password: hashedPassword, 
     });
     await newUser.save();
 
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: "Error registering user" });
   }
 };
@@ -42,7 +46,7 @@ const login = async (req, res) => {
     if (!isPasswordValid)
       return res.status(400).json({ error: "Invalid password" });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || "", {
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
     res.json({ token });
