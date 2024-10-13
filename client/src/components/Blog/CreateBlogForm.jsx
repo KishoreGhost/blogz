@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createBlog } from '../api';
+import { createBlog } from '../../api';
 
 const CreateBlogForm = () => {
   const [title, setTitle] = useState('');

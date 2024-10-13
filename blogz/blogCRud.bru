@@ -5,7 +5,14 @@ meta {
 }
 
 post {
-  url: http://localhost:3000/blog/createBlog
-  body: none
+  url: http://localhost:3000/auth/signup
+  body: json
   auth: none
+}
+
+body:json {
+  {
+    "email": "hello blog",
+    "password": "fuck you"
+  }
 }
