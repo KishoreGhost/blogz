@@ -1,6 +1,6 @@
 import React from 'react';
-import BlogList from './components/BlogList'; 
-import CreateBlogForm from './components/CreateBlogForm';
+import BlogList from './components/Blog/BlogList'; 
+import CreateBlogForm from './components/Blog/CreateBlogForm';
 
 const App = () => {
   return (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchBlogs } from '../api'; 
+import { fetchBlogs } from '../../api'; 
 
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
@@ -26,7 +26,7 @@ const BlogList = () => {
 
   return (
     <div>
-      <h2>Blogs</h2>
+      <h2 className=''>Blogs</h2>
       <ul>
         {blogs.map(blog => (
           <li key={blog.id}>
