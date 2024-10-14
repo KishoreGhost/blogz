@@ -16,8 +16,7 @@ const BlogList = () => {
       } finally {
         setLoading(false);
       }
-    };
-    
+    };    
     getBlogs();
   }, []);
 

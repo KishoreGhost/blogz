@@ -1,13 +1,15 @@
 import React from 'react';
 import BlogList from './components/Blog/BlogList'; 
 import CreateBlogForm from './components/Blog/CreateBlogForm';
+import HeaderCompo from './components/Header/HeaderCompo';
 
 const App = () => {
   return (
-    <div className="App">
-      <BlogList />
-      <CreateBlogForm />
-    </div>
+    <>
+      <HeaderCompo />
+      {/* <BlogList /> */}
+      {/* <CreateBlogForm /> */}
+    </>
   );
 };
 

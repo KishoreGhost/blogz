@@ -18,6 +18,11 @@ export const fetchBlogs = async () => {
   return await api.get('/blog');
 };
 
+export const fetchUserBlogs = async (userId) => {
+  return await api.get(`/user/${userId}/blogs`);
+};
+
+
 export const createBlog = async (blogData) => {
   return await api.post('/createBlog', blogData);
 };
