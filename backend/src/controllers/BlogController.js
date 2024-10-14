@@ -1,37 +1,53 @@
 const Blog = require('../model/Blog.model');
 
+// Create a new blog
 const createBlog = async (req, res) => {
   const { title, content } = req.body;
-  console.log(req.user)
-  // const userId = req.user.id;
+  // const userId = req.user._id; 
 
   try {
     const newBlog = new Blog({
       title,
       content,
-      // author: userId,
+      // author: userId, 
       likes: 0,
       comments: []
     });
     await newBlog.save();
     res.status(201).json({ message: 'Blog created successfully', blog: newBlog });
   } catch (error) {
-    console.log(error)
+    console.error('Error creating blog:', error);
     res.status(500).json({ error: 'Error creating blog' });
   }
 };
 
+// Fetch all blogs with author details
 const getAllBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find().populate('author', 'username email');
-    res.json(blogs);
+    // const blogs = await Blog.find().populate('author', 'username email');
+    const blogs = await Blog.find()
+    res.status(200).json(blogs);
   } catch (error) {
+    console.error('Error fetching blogs:', error);
     res.status(500).json({ error: 'Error fetching blogs' });
   }
 };
 
+// Fetch all blogs by a specific user
+const getUserBlogs = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const blogs = await Blog.find({ author: userId }).populate('author', 'username email');
+    res.status(200).json(blogs);
+  } catch (error) {
+    console.error('Error fetching user blogs:', error);
+    res.status(500).json({ error: 'Error fetching user blogs' });
+  }
+};
+
+// Like a blog
 const likeBlog = async (req, res) => {
-  console.log(req.params)
   const { blogId } = req.params;
 
   try {
@@ -40,29 +56,33 @@ const likeBlog = async (req, res) => {
 
     blog.likes += 1;
     await blog.save();
-    res.json({ message: 'Blog liked successfully', likes: blog.likes });
+    res.status(200).json({ message: 'Blog liked successfully', likes: blog.likes });
   } catch (error) {
+    console.error('Error liking blog:', error);
     res.status(500).json({ error: 'Error liking blog' });
   }
 };
 
+// Comment on a blog
 const commentOnBlog = async (req, res) => {
   const { blogId } = req.params;
   const { comment } = req.body;
-  // const userId = req.user.id;
+  const userId = req.user._id; 
 
   try {
     const blog = await Blog.findById(blogId);
     if (!blog) return res.status(404).json({ error: 'Blog not found' });
 
-    blog.comments.push({ comment });
+    blog.comments.push({ userId, comment });
     await blog.save();
-    res.json({ message: 'Comment added successfully', comments: blog.comments });
+    res.status(200).json({ message: 'Comment added successfully', comments: blog.comments });
   } catch (error) {
+    console.error('Error commenting on blog:', error);
     res.status(500).json({ error: 'Error commenting on blog' });
   }
 };
 
+// Share a blog
 const shareBlog = async (req, res) => {
   const { blogId } = req.params;
 
@@ -70,10 +90,11 @@ const shareBlog = async (req, res) => {
     const blog = await Blog.findById(blogId);
     if (!blog) return res.status(404).json({ error: 'Blog not found' });
 
-    TODO: // Here, you can implement the logic to share the blog
-    // For now, we will just return a success message
-    res.json({ message: 'Blog shared successfully', blog });
+    // TODO: Implement logic for sharing a blog
+    // For now, just return a success message
+    res.status(200).json({ message: 'Blog shared successfully', blog });
   } catch (error) {
+    console.error('Error sharing blog:', error);
     res.status(500).json({ error: 'Error sharing blog' });
   }
 };
@@ -81,6 +102,7 @@ const shareBlog = async (req, res) => {
 module.exports = {
   createBlog,
   getAllBlogs,
+  getUserBlogs,
   likeBlog,
   commentOnBlog,
   shareBlog
