@@ -1,27 +1,33 @@
 import React from "react";
 import Logo from "../../assets/blogz-logo.png";
-import ThemeToogler from "../ThemeToogler";
+import ThemeToggler from "../ThemeToggler";
 
 const headerMiddleContent = ["Home", "Blog", "Pages", "Contact"];
 
 const HeaderCompo = () => {
   return (
-    <header className="border-2 border-black flex justify-between items-center px-4 py-2">
-      <div>
-        <img className="w-20 h-14" src={Logo} alt="logo" />
-      </div>
-      <nav className="flex space-x-4">
-        {headerMiddleContent.map((content, index) => (
-          <a key={index} className="px-4 cursor-pointer hover:text-blue-500" href="#">
-            {content}
-          </a>
-        ))}
-      </nav>
-      <div className="flex items-center space-x-5">
-        <button className="bg-blue-#4B6BFB text-white px-3 py-1 rounded hover:bg-blue-600">
-          Create Blog
-        </button>
-        <ThemeToogler />
+    <header className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
+      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div>
+          <img className="w-20 h-14 object-contain" src={Logo} alt="logo" />
+        </div>
+        <nav className="hidden md:flex space-x-6">
+          {headerMiddleContent.map((content, index) => (
+            <a
+              key={index}
+              className="text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200"
+              href="#"
+            >
+              {content}
+            </a>
+          ))}
+        </nav>
+        <div className="flex items-center space-x-4">
+          <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors duration-200">
+            Create Blog
+          </button>
+          <ThemeToggler />
+        </div>
       </div>
     </header>
   );
