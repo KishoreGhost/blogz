@@ -3,9 +3,9 @@ const { createBlog, getAllBlogs, getUserBlogs, likeBlog, commentOnBlog, shareBlo
 
 const blogRouter = express.Router();
 
-blogRouter.post('/createBlog', createBlog);
-blogRouter.get('/blog', getAllBlogs);
-blogRouter.get('/user/:userId/blogs', getUserBlogs);
+blogRouter.post('/', createBlog); 
+blogRouter.get('/', getAllBlogs); 
+blogRouter.get('/user/:userId', getUserBlogs); 
 blogRouter.post('/:blogId/like', likeBlog);
 blogRouter.post('/:blogId/comment', commentOnBlog);
 blogRouter.post('/:blogId/share', shareBlog);

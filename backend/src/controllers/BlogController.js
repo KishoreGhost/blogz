@@ -46,24 +46,22 @@ const getUserBlogs = async (req, res) => {
   }
 };
 
-// Like a blog
 const likeBlog = async (req, res) => {
-  const { blogId } = req.params;
-
   try {
-    const blog = await Blog.findById(blogId);
-    if (!blog) return res.status(404).json({ error: 'Blog not found' });
-
-    blog.likes += 1;
-    await blog.save();
-    res.status(200).json({ message: 'Blog liked successfully', likes: blog.likes });
-  } catch (error) {
-    console.error('Error liking blog:', error);
-    res.status(500).json({ error: 'Error liking blog' });
+    const blog = await Blog.findById(req.params.blogId);
+    if (blog) {
+      blog.likes += 1;
+      await blog.save();
+      res.json({ likes: blog.likes });
+    } else {
+      res.status(404).json({ message: 'Blog not found' });
+    }
+  } catch (err) {
+    console.error('Error liking blog:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
-// Comment on a blog
 const commentOnBlog = async (req, res) => {
   const { blogId } = req.params;
   const { comment } = req.body;
