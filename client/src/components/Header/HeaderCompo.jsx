@@ -1,6 +1,7 @@
 import React from "react";
 import Logo from "../../assets/blogz-logo.png";
 import ThemeToggler from "../ThemeToggler";
+import { Link } from "react-router-dom";
 
 const headerMiddleContent = ["Home", "Blog", "Pages", "Contact"];
 
@@ -23,9 +24,11 @@ const HeaderCompo = () => {
           ))}
         </nav>
         <div className="flex items-center space-x-4">
-          <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors duration-200">
-            Create Blog
-          </button>
+          <Link to="/create">
+            <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors duration-200">
+              Create Blog
+            </button>
+          </Link>
           <ThemeToggler />
         </div>
       </div>

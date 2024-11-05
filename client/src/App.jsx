@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import BlogList from "./components/Blog/BlogList";
-import CreateBlogForm from "./components/Blog/CreateBlogForm";
+import { BrowserRouter as Router } from "react-router-dom";
 import HeaderCompo from "./components/Header/HeaderCompo";
 import Footer from "./components/Footer/Footer";
+import Routes from "./components/Routees";
 
 const App = () => {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
@@ -18,10 +17,7 @@ const App = () => {
   return (
     <Router>
       <HeaderCompo theme={theme} setTheme={setTheme} />
-      <Routes>
-        <Route path="/" element={<BlogList theme={theme} />} />
-        <Route path="/create" element={<CreateBlogForm />} />
-      </Routes>
+      <Routes theme={theme} />
       <Footer />
     </Router>
   );

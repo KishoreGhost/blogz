@@ -1,101 +1,111 @@
-  import React, { useEffect, useState } from "react";
-  import { Heart, MessageCircle, Share2, Trash2, Edit } from "lucide-react";
-  import { fetchBlogs } from "../../api";
+import React, { useEffect, useState } from "react";
+import { Heart, MessageCircle, Share2 } from "lucide-react";
+import axios from "axios";
 
-  const BlogList = () => {
-    const [blogs, setBlogs] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [commentText, setCommentText] = useState("");
-    const [activeCommentId, setActiveCommentId] = useState(null);
+const BlogList = () => {
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [commentText, setCommentText] = useState("");
+  const [activeCommentId, setActiveCommentId] = useState(null);
 
-    useEffect(() => {
-      const getBlogs = async () => {
-        try {
-          const response = await fetchBlogs();
-          setBlogs(response.data);
-        } catch (err) {
-          setError(err.message);
-        } finally {
-          setLoading(false);
-        }
-      };
-      getBlogs();
-    }, []);
+  // Set up axios instance
+  const api = axios.create({
+    baseURL: "http://localhost:3000", // Ensure this URL matches your backend setup
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
-    const handleLike = async (blogId) => {
+  // Fetch blogs on component mount
+  useEffect(() => {
+    const getBlogs = async () => {
+      setLoading(true);
       try {
-        const response = await fetch(`/blogs/${blogId}/like`, {
-          method: 'POST'
-        });
-        const data = await response.json();
-        
-        // Update blogs state with new like count
-        setBlogs(blogs.map(blog => 
-          blog._id === blogId ? { ...blog, likes: data.likes } : blog
-        ));
+        const response = await api.get("/blogs");
+        setBlogs(response.data);
       } catch (err) {
-        console.error('Error liking blog:', err);
+        setError(err.response?.data?.message || "Failed to fetch blogs");
+      } finally {
+        setLoading(false);
       }
     };
+    getBlogs();
+  }, []);
 
-    const handleComment = async (blogId) => {
-      try {
-        const response = await fetch(`/api/blogs/${blogId}/comment`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ comment: commentText })
-        });
-        const data = await response.json();
-        
-        // Update blogs state with new comment
-        setBlogs(blogs.map(blog => 
-          blog._id === blogId ? { ...blog, comments: data.comments } : blog
-        ));
-        setCommentText("");
-        setActiveCommentId(null);
-      } catch (err) {
-        console.error('Error commenting on blog:', err);
-      }
-    };
-
-    const handleShare = async (blogId) => {
-      try {
-        await fetch(`/api/blogs/${blogId}/share`, {
-          method: 'POST'
-        });
-        // Handle successful share (e.g., show a success message)
-      } catch (err) {
-        console.error('Error sharing blog:', err);
-      }
-    };
-
-    if (loading) {
-      return (
-        <div className="flex justify-center items-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-        </div>
+  // Handle liking a blog
+  const handleLike = async (blogId) => {
+    try {
+      const response = await api.post(`/blogs/${blogId}/like`);
+      setBlogs((prevBlogs) =>
+        prevBlogs.map((blog) =>
+          blog._id === blogId ? { ...blog, likes: response.data.likes } : blog
+        )
       );
+    } catch (err) {
+      console.error("Error liking blog:", err);
     }
+  };
 
-    if (error) {
-      return (
-        <div className="flex justify-center items-center min-h-screen">
-          <div className="text-red-500 dark:text-red-400">Error: {error}</div>
-        </div>
+  // Handle adding a comment
+  const handleComment = async (blogId) => {
+    try {
+      const response = await api.post(`/blogs/${blogId}/comment`, {
+        comment: commentText,
+      });
+      setBlogs((prevBlogs) =>
+        prevBlogs.map((blog) =>
+          blog._id === blogId
+            ? { ...blog, comments: response.data.comments }
+            : blog
+        )
       );
+      setCommentText("");
+      setActiveCommentId(null);
+    } catch (err) {
+      console.error("Error commenting on blog:", err);
     }
+  };
 
+  // Handle sharing a blog
+  const handleShare = async (blogId) => {
+    try {
+      await api.post(`/blogs/${blogId}/share`);
+      alert("Blog shared successfully!"); // Example success message
+    } catch (err) {
+      console.error("Error sharing blog:", err);
+    }
+  };
+
+  if (loading) {
     return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-red-500 dark:text-red-400">Error: {error}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center bg-gray-100 dark:bg-gray-900 p-4">
       <div className="container mx-auto px-4 py-8">
-        <h2 className="text-3xl font-bold mb-8 text-gray-800 dark:text-white">Latest Blogs</h2>
-        
+        <h2 className="text-3xl font-bold mb-8 text-gray-800 dark:text-white">
+          Latest Blogs
+        </h2>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogs.map((blog) => (
-            <article key={blog._id} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
-              {/* Blog Header */}
+            <article
+              key={blog._id}
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105"
+            >
               <div className="p-6">
                 <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
                   {blog.title}
@@ -105,28 +115,33 @@
                 </p>
               </div>
 
-              {/* Interaction Section */}
               <div className="px-6 pb-4">
                 <div className="flex items-center justify-between border-t dark:border-gray-700 pt-4">
-                  <button 
+                  <button
                     onClick={() => handleLike(blog._id)}
                     className="flex items-center space-x-1 text-gray-600 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400"
                   >
-                    <Heart className={`h-5 w-5 ${blog.likes > 0 ? 'fill-current text-red-500' : ''}`} />
+                    <Heart
+                      className={`h-5 w-5 ${
+                        blog.likes > 0 ? "fill-current text-red-500" : ""
+                      }`}
+                    />
                     <span>{blog.likes}</span>
                   </button>
 
-                  {/* Comment Button */}
-                  <button 
-                    onClick={() => setActiveCommentId(activeCommentId === blog._id ? null : blog._id)}
+                  <button
+                    onClick={() =>
+                      setActiveCommentId(
+                        activeCommentId === blog._id ? null : blog._id
+                      )
+                    }
                     className="flex items-center space-x-1 text-gray-600 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400"
                   >
                     <MessageCircle className="h-5 w-5" />
                     <span>{blog.comments?.length || 0}</span>
                   </button>
 
-                  {/* Share Button */}
-                  <button 
+                  <button
                     onClick={() => handleShare(blog._id)}
                     className="text-gray-600 dark:text-gray-300 hover:text-green-500 dark:hover:text-green-400"
                   >
@@ -134,7 +149,6 @@
                   </button>
                 </div>
 
-                {/* Comment Section */}
                 {activeCommentId === blog._id && (
                   <div className="mt-4 space-y-4">
                     <div className="flex space-x-2">
@@ -152,12 +166,16 @@
                         Post
                       </button>
                     </div>
-                    
-                    {/* Comments List */}
+
                     <div className="space-y-2 max-h-40 overflow-y-auto">
                       {blog.comments?.map((comment, index) => (
-                        <div key={index} className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
-                          <p className="text-sm text-gray-600 dark:text-gray-300">{comment.comment}</p>
+                        <div
+                          key={index}
+                          className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg"
+                        >
+                          <p className="text-sm text-gray-600 dark:text-gray-300">
+                            {comment.comment}
+                          </p>
                         </div>
                       ))}
                     </div>
@@ -168,7 +186,8 @@
           ))}
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
-  export default BlogList;
+export default BlogList;
