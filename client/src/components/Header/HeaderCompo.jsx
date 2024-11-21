@@ -24,6 +24,11 @@ const HeaderCompo = () => {
           ))}
         </nav>
         <div className="flex items-center space-x-4">
+          <Link to="/login">
+            <button className="border border-blue-500 text-blue-500 hover:bg-blue-50 px-4 py-2 rounded-md transition-colors duration-200">
+              Login
+            </button>
+          </Link>
           <Link to="/create">
             <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-colors duration-200">
               Create Blog
