@@ -1,10 +1,24 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000'; 
+const API_BASE_URL = 'http://localhost:3000';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
 });
+
+// Add a request interceptor to include the auth token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // Auth endpoints
 export const signup = async (userData) => {
@@ -17,15 +31,15 @@ export const login = async (userData) => {
 
 // Blog endpoints
 export const fetchBlogs = async () => {
-  return await api.get('/blogs'); 
+  return await api.get('/blogs');
 };
 
 export const fetchUserBlogs = async (userId) => {
-  return await api.get(`/blogs/user/${userId}`); 
+  return await api.get(`/blogs/user/${userId}`);
 };
 
 export const createBlog = async (blogData) => {
-  return await api.post('/blogs', blogData); 
+  return await api.post('/blogs', blogData);
 };
 
 export const likeBlog = async (blogId) => {
